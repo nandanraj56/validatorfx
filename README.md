@@ -12,7 +12,7 @@ Early stage developement, please feel free to raise any issue, enhancements, or 
     email
 
 # Example use cases
-
+```
 testSchema = {
     "type": "object",
     "properties": {
@@ -38,12 +38,14 @@ data = {
 }
 
 validate(testSchema, data)
+```
 
+```
 testSchema2 = {
     "type": "string"
 }
 data2 = "test"
 
 validate(testSchema, data)
-
+```
 
