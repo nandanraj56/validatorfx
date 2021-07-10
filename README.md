@@ -3,15 +3,17 @@
 A simple Python json validator, can be used to validate incoming REST requests
 Early stage developement, please feel free to raise any issue, enhancements, or suggessions
 
-# Currently supported data types
+## Currently supported data types
     object
     string
     integer
     float
     boolean
     email
+## Importing the package
+`from validatorfx.index import validate `
 
-# Example use cases
+## Example use cases
 ```
 testSchema = {
     "type": "object",
