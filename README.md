@@ -86,7 +86,7 @@ data = {
     "xobj": {
         "dsf": "sdfsd"
     },
-    "nraj":{"age":56}
+    "nraj":{}
 }
 
 validate(testSchema, data)
