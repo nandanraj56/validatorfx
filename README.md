@@ -4,12 +4,13 @@ A simple Python json validator, can be used to validate incoming REST requests
 Early stage developement, please feel free to raise any issue, enhancements, or suggessions
 
 ## Currently supported data types
-    object
+    object/dict
     string
     integer
     float
     boolean
     email
+    array/list
 ## Importing the package
 `from validatorfx.index import validate `
 
@@ -49,5 +50,46 @@ testSchema2 = {
 data2 = "test"
 
 validate(testSchema, data)
+```
+
+```
+from validatorfx.index import validate
+
+testSchema = {
+    "type": "object",
+    "properties": {
+        "name": {"type": "string"},
+        "class": {"type": "string"},
+        "email": {"type": "email", "required": "true"},
+        "subjects": {"type": "array", "required": "true"},
+        "xobj": {
+            "type": "object",
+            "properties": {
+                "dsf": {
+                    "type": "string"
+                }
+            }
+        },
+        "nraj":{
+            "type" : "object",
+            "properties":{},
+            "required":"true"
+        }
+    }
+}
+
+data = {
+    "name": "Nandan Raj",
+    "class": "5b",
+    "email": "hjhdsajh@gh.ds",
+    "subjects": ["Maths", "Science"],
+    "xobj": {
+        "dsf": "sdfsd"
+    },
+    "nraj":{"age":56}
+}
+
+validate(testSchema, data)
+
 ```
 

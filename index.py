@@ -3,22 +3,32 @@
 ##
 import re
 
-def validate(schema, data, key="input"):
+def validate(schema, data, key="inputSchema"):
     if(not "type" in schema):
-        raise ValueError(f'{key}: Schema type not defined', schema, 'schemaError')
+        raise ValueError(f'{key}: Schema type not defined',
+                         schema, 'schemaError')
 
-    if(schema["type"] == "object"):
-        isObject(data, key)
-    elif(schema["type"] == "string"):
+    if(schema["type"] == "string"):
         isString(data, key)
+
     elif(schema["type"] == "integer"):
-        isString(data, key)
+        isInteger(data, key)
+
     elif(schema["type"] == "float"):
-        isString(data, key)
+        isFloat(data, key)
+
     elif(schema["type"] == "boolean"):
-        isString(data, key)
+        isBoolean(data, key)
+
     elif(schema["type"] == "email"):
         isEmail(data, key)
+
+    elif(schema["type"] == "array"):
+        isArray(data, key)
+
+    elif(schema["type"] == "object"):
+        isObject(data, key)
+
     else:
         raise LookupError(
             f'{schema["type"]}: type is not known', schema, 'schemaError')
@@ -29,8 +39,11 @@ def validate(schema, data, key="input"):
             raise ValueError(
                 f'{key}: Schema properties not defined', schema, 'schemaError')
 
+        #Checks if schema properties is object or not: Should always be an object 
+        isObject(schema["properties"],f"{key}.properties")
+
         # Checks if any Foreign key is present in data: A key that is not defined in properties of schema
-        for dataKey in data.keys():
+        for dataKey in data:
             if(not dataKey in schema["properties"]):
                 raise KeyError(
                     f'{dataKey}: Foreign key present', data, "keyError")
@@ -44,15 +57,28 @@ def validate(schema, data, key="input"):
                 raise KeyError(
                     f'{key}: Required key not present', data, "keyError")
 
+            #Checks if Schema value is object type or not
+            if(type(schemaValue) != dict):
+                raise ValueError(
+                    f'{key}: Schema/Subschema is not of type object/dict', schema, 'schemaError')
+
+            # Checks for each key of schema properies only if they are also in data
             if(key in data):
-                validate(schema["properties"][key], data[key], key)
+                validate(schemaValue, data[key], key)
+
+
+def isArray(data, key):
+    if(isinstance(data, list)):
+        return True
+    else:
+        raise TypeError(f'{key}: Not a valid Array/list', data, 'typeError')
 
 
 def isObject(data, key):
     if(type(data) == dict):
         return True
     else:
-        raise TypeError(f'Not a valid Object', data, 'typeError')
+        raise TypeError(f'{key}: Not a valid Object/dict', data, 'typeError')
 
 
 def isString(data, key):
@@ -83,11 +109,10 @@ def isBoolean(data, key):
         raise TypeError(f'{key}: Not a valid Boolean', data, 'typeError')
 
 
-def isEmail(data):
-
+def isEmail(data, key):
     regex = '^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w{2,3}$'
 
     if(type(data) == str and re.search(regex, data)):
         return True
     else:
-        raise ValueError('Not a valid Email', data, 'emailInvalid')
+        raise ValueError(f'{key}: Not a valid Email', data, 'emailInvalid')
